@@ -11,15 +11,15 @@ __all__ = [
 ]
 
 MOCK_CONFIG_BLANK = yaml.safe_load(open(
-    'packs/cloudflare/tests/fixture/blank.yaml').read())
+    'tests/fixture/blank.yaml').read())
 MOCK_CONFIG_FULL = yaml.safe_load(open(
-    'packs/cloudflare/tests/fixture/full.yaml').read())
+    'tests/fixture/full.yaml').read())
 
 MOCK_DATA_INVALID_JSON = "{'dd': doo}"
 MOCK_DATA_SUCCESS = open(
-    'packs/cloudflare/tests/fixture/success.json').read()
+    'tests/fixture/success.json').read()
 MOCK_DATA_FAIL = open(
-    'packs/cloudflare/tests/fixture/fail.json').read()
+    'tests/fixture/fail.json').read()
 
 
 class GetIPsActionTestCase(BaseActionTestCase):
