@@ -68,7 +68,7 @@ class CloudflareBaseAction(Action):
 
         try:
             data = r.json()
-        except:
+        except ValueError:
             raise ValueError("Invalid JSON")
         else:
             return data
