@@ -1,5 +1,9 @@
 # Change Log
 
+# 0.3.3
+
+- Minor linting fixes
+  
 # 0.3.1
 
 - Include a user-agent string in the headers, as this is now required
