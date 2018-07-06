@@ -13,14 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import requests
+import cloudflare
 import six
 
 from st2common.runners.base_action import Action
 
 
 class CloudflareBaseAction(Action):
-    API_HOST = "https://api.cloudflare.com"
 
     def __init__(self, config):
         super(CloudflareBaseAction, self).__init__(config)
@@ -28,12 +27,9 @@ class CloudflareBaseAction(Action):
 
         self.api_key = self.config.get('api_key')
         self.api_email = self.config.get('api_email')
-
-    def send_user_error(self, message):
-        """
-        Prints an user error message.
-        """
-        print(message)
+        self.client = cloudflare.CloudFlare(email=self.api_email,
+                                            token=self.api_key,
+                                            raw=True)
 
     def kwargs_to_params(self, **kwargs):
         params = {}
@@ -42,47 +38,35 @@ class CloudflareBaseAction(Action):
                 params[k] = v
         return params
 
-    def ensure_api_key_set(self):
-        if not self.api_key:
-            raise KeyError('This action requires "api_key" in the config and it is missing.')
-        if not self.api_email:
-            raise KeyError('This action requires "api_email" in the config and it is missing.')
+    def invoke(self, func, *args, **kwargs):
+        params = self.kwargs_to_params(**kwargs)
+        paged_results = []
+        page_number = 0
+        while True:
+            page_number += 1
+            if page_number > 1:
+                # only specify page number if we had paged results from
+                # the first call, this way we don't send the `page` parameter
+                # to calls that don't accept it
+                # NOTE: the default page number = `
+                params['page'] = page_number
 
-    def _get(self, url, params=None, headers=None, api_key_required=False):
-        """
-        Issue a get request via requests.session()
+            # invoke the Cloudflare API
+            raw_results = func(*args, params=params)
 
-        Args:
-            url: The URL.
-            headers: The Headers
-            params: URL query parameters
+            # do we have paged results
+            if 'result_info' in raw_results:
+                count = raw_results['result_info']['count']
+                page = raw_results['result_info']['page']
+                per_page = raw_results['result_info']['per_page']
+                total_count = raw_results['result_info']['total_count']
+                total_pages = raw_results['result_info']['total_pages']
+                paged_results.extend(raw_results['result'])
+            else:
+                # we have non-paged results, return immediately
+                return raw_results['result']
 
-        Returns:
-            dict: Of JSON payload.
+            if page_number == total_pages:
+                break
 
-        Raises:
-            ValueError: On HTTP error or Invalid JSON.
-        """
-        if headers is None:
-            headers = {}
-
-        if api_key_required:
-            # raises if not set
-            self.ensure_api_key_set()
-            headers['X-Auth-Key'] = self.api_key
-            headers['X-Auth-Email'] = self.api_email
-
-        try:
-            r = self.session.get(url,
-                                 headers=headers,
-                                 params=params)
-            r.raise_for_status()
-        except requests.exceptions.HTTPError:
-            raise ValueError("HTTP error: %s" % r.status_code)
-
-        try:
-            data = r.json()
-        except ValueError:
-            raise ValueError("Invalid JSON")
-        else:
-            return data
+        return paged_results

@@ -33,19 +33,4 @@ class GetIPsAction(CloudflareBaseAction):
         Returns:
             dict: containing 'ipv4_cidrs' and 'ipv6_cidrs'
         """
-
-        results = {}
-        url = "{}/client/v4/ips".format(self.API_HOST)
-        data = self._get(url)
-
-        if data['success'] is True:
-            results['messages'] = data['messages']
-            results['ipv4_cidrs'] = data['result']['ipv4_cidrs']
-            results['ipv6_cidrs'] = data['result']['ipv6_cidrs']
-
-            return results
-        else:
-            for error in data['errors']:
-                self.send_user_error(error)
-
-            raise Exception("Error from Cloudflare: {}".format(data['errors']))
+        return self.invoke(self.client.ips.get)

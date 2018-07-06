@@ -19,18 +19,10 @@ class GetZoneDnsRecordsAction(CloudflareBaseAction):
             dict: containing DNS records
         """
 
-        results = {}
-        url = "{}/client/v4/zones/{}/dns_records".format(self.API_HOST,
-                                                         kwargs['zone_id'])
-        params = self.kwargs_to_params(**kwargs)
-        data = self._get(url, params, api_key_required=True)
+        # grab URL components and remove from kwargs
+        zone_id = kwargs['zone_id']
+        del kwargs['zone_id']
 
-        if data['success'] is True:
-            results['messages'] = data['messages']
-            results['zones'] = data['result']
-            return results
-        else:
-            for error in data['errors']:
-                self.send_user_error(error)
-
-            raise Exception("Error from Cloudflare: {}".format(data['errors']))
+        # invoke API call
+        result = self.invoke(self.client.zones.dns_records.get, zone_id, **kwargs)
+        return result
