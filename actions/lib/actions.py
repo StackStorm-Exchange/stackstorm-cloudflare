@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import cloudflare
+import CloudFlare
 import six
 
 from st2common.runners.base_action import Action
@@ -27,7 +27,7 @@ class CloudflareBaseAction(Action):
 
         self.api_key = self.config.get('api_key')
         self.api_email = self.config.get('api_email')
-        self.client = cloudflare.CloudFlare(email=self.api_email,
+        self.client = CloudFlare.CloudFlare(email=self.api_email,
                                             token=self.api_key,
                                             raw=True)
 
