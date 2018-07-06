@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import requests
+import six
 
 from st2common.runners.base_action import Action
 
@@ -23,13 +24,10 @@ class CloudflareBaseAction(Action):
 
     def __init__(self, config):
         super(CloudflareBaseAction, self).__init__(config)
-
         self.session = requests.Session()
 
-        try:
-            self.api_key = self.config['api_key']
-        except KeyError:
-            raise ValueError("Missing api_key in the config.")
+        self.api_key = self.config.get('api_key')
+        self.api_email = self.config.get('api_email')
 
     def send_user_error(self, message):
         """
@@ -37,14 +35,27 @@ class CloudflareBaseAction(Action):
         """
         print(message)
 
-    def _get(self, url, payload, headers=None):
+    def kwargs_to_params(self, **kwargs):
+        params = {}
+        for k, v in six.iteritems(kwargs):
+            if k and v:
+                params[k] = v
+        return params
+
+    def ensure_api_key_set(self):
+        if not self.api_key:
+            raise KeyError('This action requires "api_key" in the config and it is missing.')
+        if not self.api_email:
+            raise KeyError('This action requires "api_email" in the config and it is missing.')
+
+    def _get(self, url, params=None, headers=None, api_key_required=False):
         """
         Issue a get request via requests.session()
 
         Args:
             url: The URL.
             headers: The Headers
-            payload: The Payload.
+            params: URL query parameters
 
         Returns:
             dict: Of JSON payload.
@@ -55,13 +66,16 @@ class CloudflareBaseAction(Action):
         if headers is None:
             headers = {}
 
-        headers['Content-Type'] = "application/json"
-        headers['User-Agent'] = "ST2CloudflarePack/0.3.1"
+        if api_key_required:
+            # raises if not set
+            self.ensure_api_key_set()
+            headers['X-Auth-Key'] = self.api_key
+            headers['X-Auth-Email'] = self.api_email
 
         try:
             r = self.session.get(url,
                                  headers=headers,
-                                 params=payload)
+                                 params=params)
             r.raise_for_status()
         except requests.exceptions.HTTPError:
             raise ValueError("HTTP error: %s" % r.status_code)
