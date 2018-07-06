@@ -32,39 +32,48 @@ class CloudflareBaseAction(Action):
     def kwargs_to_params(self, **kwargs):
         params = {}
         for k, v in six.iteritems(kwargs):
-            if k and v:
+            if v is not None:
                 params[k] = v
         return params
 
     def invoke(self, func, *args, **kwargs):
+        # convert query arguments to parameters dict
+        # removing any parameters with a value of None
         params = self.kwargs_to_params(**kwargs)
-        paged_results = []
-        page_number = 0
+
+        results = []
+        page_number = 1
+        total_pages = 0
+
+        # loop for all pages in results
         while True:
-            page_number += 1
             if page_number > 1:
-                # only specify page number if we had paged results from
-                # the first call, this way we don't send the `page` parameter
-                # to calls that don't accept it
-                # NOTE: the default page number = `
+                # Only pass in the `page` parameter if we had paged results from
+                # the first loop. This way we don't send the `page` parameter
+                # to calls that don't accept it.
+                # NOTE: the default page number = 1
                 params['page'] = page_number
 
             # invoke the Cloudflare API
             raw_results = func(*args, params=params)
 
             # do we have paged results
-            if 'result_info' in raw_results:
-                count = raw_results['result_info']['count']
-                page = raw_results['result_info']['page']
-                per_page = raw_results['result_info']['per_page']
-                total_count = raw_results['result_info']['total_count']
-                total_pages = raw_results['result_info']['total_pages']
-                paged_results.extend(raw_results['result'])
+            if 'result_info' not in raw_results:
+                # we have non-paged results, return those results verbatim
+                # and stop iterating!
+                results = raw_results['result']
+                break
             else:
-                # we have non-paged results, return immediately
-                return raw_results['result']
+                # we have paged results, extract the total number of pages
+                # and append this pages results to the list
+                total_pages = raw_results['result_info']['total_pages']
+                results.extend(raw_results['result'])
 
-            if page_number == total_pages:
+            # if we've iterated over all of the pages
+            if page_number >= total_pages:
                 break
 
-        return paged_results
+            # go to next page
+            page_number += 1
+
+        return results
