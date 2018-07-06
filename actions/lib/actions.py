@@ -23,8 +23,6 @@ class CloudflareBaseAction(Action):
 
     def __init__(self, config):
         super(CloudflareBaseAction, self).__init__(config)
-        self.session = requests.Session()
-
         self.api_key = self.config.get('api_key')
         self.api_email = self.config.get('api_email')
         self.client = CloudFlare.CloudFlare(email=self.api_email,
