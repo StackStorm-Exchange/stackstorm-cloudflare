@@ -19,7 +19,7 @@ from lib.actions import CloudflareBaseAction
 class GetIPsAction(CloudflareBaseAction):
     def run(self):
         """
-        Get CloudFlare IPs
+        Get Cloudflare IPs
 
         Args:
             None.
@@ -35,11 +35,8 @@ class GetIPsAction(CloudflareBaseAction):
         """
 
         results = {}
-
         url = "{}/client/v4/ips".format(self.API_HOST)
-        payload = {}
-
-        data = self._get(url, payload)
+        data = self._get(url)
 
         if data['success'] is True:
             results['messages'] = data['messages']
