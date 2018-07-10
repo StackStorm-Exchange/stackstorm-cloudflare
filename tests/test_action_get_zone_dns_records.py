@@ -51,7 +51,9 @@ class GetZoneDnsRecordsActionTestCase(CloudflareBaseActionTestCase):
         result = action.run(zone_id="023e105f4ecef8ad9ca31a8372d0c353")
 
         self.assertEqual(result, expected)
-        mock_session.get.assert_called_with("https://api.cloudflare.com/client/v4/zones/023e105f4ecef8ad9ca31a8372d0c353/dns_records",
+        url = ("https://api.cloudflare.com/client/v4/zones/{}/dns_records"
+               .format("023e105f4ecef8ad9ca31a8372d0c353"))
+        mock_session.get.assert_called_with(url,
                                             data=None,
                                             headers={'X-Auth-Email': 'user@domain.tld',
                                                      'X-Auth-Key': 'API-Key',
