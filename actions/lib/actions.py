@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import CloudFlare
+import copy
 import six
 
 from st2common.runners.base_action import Action
@@ -54,8 +55,8 @@ class CloudflareBaseAction(Action):
                 # NOTE: the default page number = 1
                 params['page'] = page_number
 
-            # invoke the Cloudflare API
-            raw_results = func(*args, params=params)
+            # invoke the Cloudflare APIo
+            raw_results = func(*args, params=copy.deepcopy(params))
 
             # do we have paged results
             if 'result_info' not in raw_results:

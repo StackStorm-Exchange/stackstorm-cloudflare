@@ -4,14 +4,14 @@ from CloudFlare.utils import user_agent
 
 from cloudflare_base_action_test_case import CloudflareBaseActionTestCase
 
-from get_zones import GetZonesAction
+from get_zone_dns_records import GetZoneDnsRecordsAction
 
 MOCK_DATA_SUCCESS = open(
-    'tests/fixtures/get_zones_success.json').read()
+    'tests/fixtures/get_zone_dns_records_success.json').read()
 
 
-class GetZonesActionTestCase(CloudflareBaseActionTestCase):
-    action_cls = GetZonesAction
+class GetZoneDnsRecordsActionTestCase(CloudflareBaseActionTestCase):
+    action_cls = GetZoneDnsRecordsAction
 
     def test_run_is_instance(self):
         action = self.get_action_instance(self.config_good)
@@ -22,9 +22,20 @@ class GetZonesActionTestCase(CloudflareBaseActionTestCase):
         action = self.get_action_instance(self.config_good)
         expected = [
             {
-                "id": "023e105f4ecef8ad9ca31a8372d0c353",
-                "name": "example.com",
-                "type": "full"
+                "name": "abc.domain.tld",
+                "content": "1.2.3.4",
+                "zone_name": "domain.tld",
+                "type": "A",
+                "id": "41981e0023c8e1e375ffbc9b35a0fb4e",
+                "zone_id": "023e105f4ecef8ad9ca31a8372d0c353"
+            },
+            {
+                "name": "xyz.domain.tld",
+                "content": "7.8.9.0",
+                "zone_name": "domain.tld",
+                "type": "A",
+                "id": "bd461aba4b76229c9be2b77e4ef369af",
+                "zone_id": "023e105f4ecef8ad9ca31a8372d0c353"
             }
         ]
 
@@ -37,10 +48,10 @@ class GetZonesActionTestCase(CloudflareBaseActionTestCase):
         mock_session.get.return_value = response
         mock_requests.Session.return_value = mock_session
 
-        result = action.run()
+        result = action.run(zone_id="023e105f4ecef8ad9ca31a8372d0c353")
 
         self.assertEqual(result, expected)
-        mock_session.get.assert_called_with("https://api.cloudflare.com/client/v4/zones",
+        mock_session.get.assert_called_with("https://api.cloudflare.com/client/v4/zones/023e105f4ecef8ad9ca31a8372d0c353/dns_records",
                                             data=None,
                                             headers={'X-Auth-Email': 'user@domain.tld',
                                                      'X-Auth-Key': 'API-Key',

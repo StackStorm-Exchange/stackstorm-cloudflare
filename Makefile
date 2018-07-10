@@ -3,6 +3,7 @@ ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 CI_REPO_PATH ?= $(ROOT_DIR)/ci
 CI_REPO_BRANCH ?= master
 ROOT_VIRTUALENV ?= ""
+LINT_CONFIGS_DIR ?= $(ROOT_DIR)/lint-configs/
 
 # read in pack's name from pack.yaml, export it so that the ci/Makefile
 # can access its value
@@ -72,4 +73,4 @@ list:
 	@echo
 	@echo "==================== invoke ci/Makefile (targets: $(MAKECMDGOALS)) ===================="
 	@echo
-	ROOT_VIRTUALENV=$(ROOT_VIRTUALENV) make -f $(ROOT_DIR)/ci/Makefile $(MAKECMDGOALS)
+	ROOT_VIRTUALENV=$(ROOT_VIRTUALENV) LINT_CONFIGS_DIR=$(LINT_CONFIGS_DIR) make -f $(ROOT_DIR)/ci/Makefile $(MAKECMDGOALS)
