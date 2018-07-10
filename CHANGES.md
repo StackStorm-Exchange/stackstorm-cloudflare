@@ -1,5 +1,18 @@
 # Change Log
 
+# 0.4.0
+
+- Migrated to using [python-cloudflare](https://github.com/cloudflare/python-cloudflare)
+  instead of plain requests.
+- Fixed API calls that require authentication by adding a new config parameters
+  `api_email`. This new config parameter is required for any API calls that require
+  authentication.
+- Added support for handling paged results.
+- Added new action `get_zones` that lists the DNS zones associated with your account.
+- Added new action `get_zone_dns_records` that lists the DNS records in a zone.
+  
+  Above changes Contributed by Nick Maludy (Encore Technologies)
+
 # 0.3.3
 
 - Minor linting fixes

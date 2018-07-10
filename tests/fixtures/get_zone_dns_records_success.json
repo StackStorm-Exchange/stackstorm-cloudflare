@@ -1,0 +1,30 @@
+{
+  "success": true,
+  "errors": [],
+  "messages": [],
+  "result": [
+    {
+      "name": "abc.domain.tld",
+      "content": "1.2.3.4",
+      "zone_name": "domain.tld",
+      "type": "A",
+      "id": "41981e0023c8e1e375ffbc9b35a0fb4e",
+      "zone_id": "023e105f4ecef8ad9ca31a8372d0c353"
+    },
+    {
+      "name": "xyz.domain.tld",
+      "content": "7.8.9.0",
+      "zone_name": "domain.tld",
+      "type": "A",
+      "id": "bd461aba4b76229c9be2b77e4ef369af",
+      "zone_id": "023e105f4ecef8ad9ca31a8372d0c353"
+    }
+  ],
+  "result_info": {
+    "page": 1,
+    "per_page": 20,
+    "count": 2,
+    "total_count": 200,
+    "total_pages": 1
+  }
+}

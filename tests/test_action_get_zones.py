@@ -4,14 +4,14 @@ from CloudFlare.utils import user_agent
 
 from cloudflare_base_action_test_case import CloudflareBaseActionTestCase
 
-from get_ips import GetIPsAction
+from get_zones import GetZonesAction
 
 MOCK_DATA_SUCCESS = open(
-    'tests/fixtures/get_ips_success.json').read()
+    'tests/fixtures/get_zones_success.json').read()
 
 
-class GetIPsActionTestCase(CloudflareBaseActionTestCase):
-    action_cls = GetIPsAction
+class GetZonesActionTestCase(CloudflareBaseActionTestCase):
+    action_cls = GetZonesAction
 
     def test_run_is_instance(self):
         action = self.get_action_instance(self.config_good)
@@ -20,12 +20,17 @@ class GetIPsActionTestCase(CloudflareBaseActionTestCase):
     @mock.patch('CloudFlare.cloudflare.requests')
     def test_run(self, mock_requests):
         action = self.get_action_instance(self.config_good)
-        expected = {'ipv4_cidrs': [u'199.27.128.0/21'],
-                    'ipv6_cidrs': [u'2400:cb00::/32']}
+        expected = [
+            {
+                "id": "023e105f4ecef8ad9ca31a8372d0c353",
+                "name": "example.com",
+                "type": "full"
+            }
+        ]
 
         response = requests.Response()
         response.status_code = 200
-        response.url = "https://api.cloudflare.com/client/v4/ips"
+        response.url = "https://api.cloudflare.com/client/v4/zones"
         response.headers['Content-Type'] = 'application/json'
         response._content = MOCK_DATA_SUCCESS
         mock_session = mock.MagicMock()
@@ -35,8 +40,10 @@ class GetIPsActionTestCase(CloudflareBaseActionTestCase):
         result = action.run()
 
         self.assertEqual(result, expected)
-        mock_session.get.assert_called_with("https://api.cloudflare.com/client/v4/ips",
+        mock_session.get.assert_called_with("https://api.cloudflare.com/client/v4/zones",
                                             data=None,
-                                            headers={'Content-Type': 'application/json',
+                                            headers={'X-Auth-Email': 'user@domain.tld',
+                                                     'X-Auth-Key': 'API-Key',
+                                                     'Content-Type': 'application/json',
                                                      'User-Agent': user_agent()},
                                             params={})

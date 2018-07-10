@@ -1,0 +1,51 @@
+---
+description: "List, search, sort, and filter a zones' DNS records. https://api.cloudflare.com/#dns-records-for-a-zone-properties"
+enabled: true
+entry_point: "get_zone_dns_records.py"
+name: "get_zone_dns_records"
+pack: "cloudflare"
+runner_type: "python-script"
+parameters:
+  zone_id:
+    type: string
+    description: "Zone identify tag (ex: '023e105f4ecef8ad9ca31a8372d0c353')"
+    required: true
+  type:
+    type: string
+    description: "DNS record type"
+    enum:
+      - "A"
+      - "AAAA"
+      - "CNAME"
+      - "TXT"
+      - "SRV"
+      - "LOC"
+      - "MX"
+      - "NS"
+      - "SP"
+  name:
+    type: string
+    description: "A domain name (ex: 'example.com') max length: 255"
+  content:
+    type: string
+    description: "DNS record content (ex: '127.0.0.1') "
+  order:
+    type: string
+    description: "Field to order zones by"
+    enum:
+      - "name"
+      - "status"
+      - "email"
+  direction:
+    type: string
+    description: "Direction to order zones"
+    enum:
+      - "asc"
+      - "desc"
+  match:
+    type: string
+    description: "Whether to match all search requirements or at least one (any)"
+    enum:
+      - "all"
+      - "any"
+    default: "all"

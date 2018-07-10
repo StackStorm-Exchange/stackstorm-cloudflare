@@ -19,36 +19,15 @@ from lib.actions import CloudflareBaseAction
 class GetIPsAction(CloudflareBaseAction):
     def run(self):
         """
-        Get CloudFlare IPs
+        Get Cloudflare IPs
 
         Args:
             None.
 
         Raises:
-            ValueError: On HTTP Error or Invaild JSON.
-            requests.exceptions.MissingSchema: If https:// missing from
-                                               api_host.
-            Exception: On "success": false from API.
+            CloudFlareAPIError: On HTTP Error or Invaild JSON.
 
         Returns:
             dict: containing 'ipv4_cidrs' and 'ipv6_cidrs'
         """
-
-        results = {}
-
-        url = "{}/client/v4/ips".format(self.API_HOST)
-        payload = {}
-
-        data = self._get(url, payload)
-
-        if data['success'] is True:
-            results['messages'] = data['messages']
-            results['ipv4_cidrs'] = data['result']['ipv4_cidrs']
-            results['ipv6_cidrs'] = data['result']['ipv6_cidrs']
-
-            return results
-        else:
-            for error in data['errors']:
-                self.send_user_error(error)
-
-            raise Exception("Error from Cloudflare: {}".format(data['errors']))
+        return self.invoke(self.client.ips.get)  # pylint: disable=no-member

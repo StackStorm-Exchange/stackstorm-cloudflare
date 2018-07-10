@@ -13,62 +13,68 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import requests
+import CloudFlare
+import copy
+import six
 
 from st2common.runners.base_action import Action
 
 
 class CloudflareBaseAction(Action):
-    API_HOST = "https://api.cloudflare.com"
 
     def __init__(self, config):
         super(CloudflareBaseAction, self).__init__(config)
+        self.api_key = self.config.get('api_key')
+        self.api_email = self.config.get('api_email')
+        self.client = CloudFlare.CloudFlare(email=self.api_email,
+                                            token=self.api_key,
+                                            raw=True)
 
-        self.session = requests.Session()
+    def kwargs_to_params(self, **kwargs):
+        params = {}
+        for k, v in six.iteritems(kwargs):
+            if v is not None:
+                params[k] = v
+        return params
 
-        try:
-            self.api_key = self.config['api_key']
-        except KeyError:
-            raise ValueError("Missing api_key in the config.")
+    def invoke(self, func, *args, **kwargs):
+        # convert query arguments to parameters dict
+        # removing any parameters with a value of None
+        params = self.kwargs_to_params(**kwargs)
 
-    def send_user_error(self, message):
-        """
-        Prints an user error message.
-        """
-        print(message)
+        results = []
+        page_number = 1
+        total_pages = 0
 
-    def _get(self, url, payload, headers=None):
-        """
-        Issue a get request via requests.session()
+        # loop for all pages in results
+        while True:
+            if page_number > 1:
+                # Only pass in the `page` parameter if we had paged results from
+                # the first loop. This way we don't send the `page` parameter
+                # to calls that don't accept it.
+                # NOTE: the default page number = 1
+                params['page'] = page_number
 
-        Args:
-            url: The URL.
-            headers: The Headers
-            payload: The Payload.
+            # invoke the Cloudflare APIo
+            raw_results = func(*args, params=copy.deepcopy(params))
 
-        Returns:
-            dict: Of JSON payload.
+            # do we have paged results
+            if 'result_info' not in raw_results:
+                # we have non-paged results, return those results verbatim
+                # and stop iterating!
+                results = raw_results['result']
+                break
+            else:
+                # we have paged results, extract the total number of pages
+                # and append this pages results to the list
+                total_pages = raw_results['result_info']['total_pages']
+                results.extend(raw_results['result'])
 
-        Raises:
-            ValueError: On HTTP error or Invalid JSON.
-        """
-        if headers is None:
-            headers = {}
+            # if we've iterated over all of the pages
+            if page_number >= total_pages:
+                break
 
-        headers['Content-Type'] = "application/json"
-        headers['User-Agent'] = "ST2CloudflarePack/0.3.1"
+            # go to next page
+            page_number += 1
 
-        try:
-            r = self.session.get(url,
-                                 headers=headers,
-                                 params=payload)
-            r.raise_for_status()
-        except requests.exceptions.HTTPError:
-            raise ValueError("HTTP error: %s" % r.status_code)
-
-        try:
-            data = r.json()
-        except ValueError:
-            raise ValueError("Invalid JSON")
-        else:
-            return data
+        return results
