@@ -1,3 +1,5 @@
+[![Build Status](https://circleci.com/gh/StackStorm-Exchange/stackstorm-cloudflare.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/StackStorm-Exchange/stackstorm-cloudflare) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 # Cloudflare Pack
 
 A pack for interacting with the [Cloudflare API](https://api.cloudflare.com).
