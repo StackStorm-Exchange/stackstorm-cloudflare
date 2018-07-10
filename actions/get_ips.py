@@ -30,4 +30,4 @@ class GetIPsAction(CloudflareBaseAction):
         Returns:
             dict: containing 'ipv4_cidrs' and 'ipv6_cidrs'
         """
-        return self.invoke(self.client.ips.get)
+        return self.invoke(self.client.ips.get)  # pylint: disable=no-member

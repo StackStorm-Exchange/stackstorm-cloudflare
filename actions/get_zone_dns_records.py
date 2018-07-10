@@ -21,5 +21,6 @@ class GetZoneDnsRecordsAction(CloudflareBaseAction):
         del kwargs['zone_id']
 
         # invoke API call
-        result = self.invoke(self.client.zones.dns_records.get, zone_id, **kwargs)
+        func = self.client.zones.dns_records.get  # pylint: disable=no-member
+        result = self.invoke(func, zone_id, **kwargs)
         return result

@@ -15,4 +15,5 @@ class GetZonesAction(CloudflareBaseAction):
         Returns:
             dict: containing DNS zones
         """
-        return self.invoke(self.client.zones.get, **kwargs)
+        return self.invoke(self.client.zones.get,  # pylint: disable=no-member
+                           **kwargs)
