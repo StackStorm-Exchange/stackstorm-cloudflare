@@ -10,10 +10,7 @@ class GetZonesAction(CloudflareBaseAction):
             None.
 
         Raises:
-            ValueError: On HTTP Error or Invaild JSON.
-            requests.exceptions.MissingSchema: If https:// missing from
-                                               api_host.
-            Exception: On "success": false from API.
+            CloudFlareAPIError: On HTTP Error or Invaild JSON.
 
         Returns:
             dict: containing DNS zones

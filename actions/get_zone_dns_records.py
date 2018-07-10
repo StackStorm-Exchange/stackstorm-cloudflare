@@ -7,13 +7,10 @@ class GetZoneDnsRecordsAction(CloudflareBaseAction):
         Get Cloudflare DNS Records in a Zone
 
         Args:
-            None.
+            zone_id: ID of the zone to get DNS records from
 
         Raises:
-            ValueError: On HTTP Error or Invaild JSON.
-            requests.exceptions.MissingSchema: If https:// missing from
-                                               api_host.
-            Exception: On "success": false from API.
+            CloudFlareAPIError: On HTTP Error or Invaild JSON.
 
         Returns:
             dict: containing DNS records
