@@ -1,5 +1,13 @@
 # Change Log
 
+# 0.4.1
+
+- Converted maintainer over to Encore Technologies
+- `api_key` in pack config is now marked with `secure: true` so it will not leak
+  sensitive data.
+  
+  Contributed by Nick Maludy (Encore Technologies)
+
 # 0.4.0
 
 - Migrated to using [python-cloudflare](https://github.com/cloudflare/python-cloudflare)
