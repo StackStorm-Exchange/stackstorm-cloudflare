@@ -1,4 +1,4 @@
 # Contributors
 
-* Jon Middleton <jon.middleton@pulsant.com>
-* Encore Technologies <code@encore.tech>
+* Encore Technologies <code@encore.tech> [Current Maintainer]
+* Jon Middleton <jon.middleton@pulsant.com> [Original Author]

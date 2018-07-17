@@ -3,6 +3,7 @@ api_key:
   type: "string"
   description: "The API Key for the Cloudflare API."
   required: false
+  secret: true
 api_email:
   type: "string"
   description: "The Email address (username) to use with the Cloudflare API."
