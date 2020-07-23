@@ -18,7 +18,7 @@ class GetIPsActionTestCase(CloudflareBaseActionTestCase):
         action = self.get_action_instance(self.config_good)
         self.assertIsInstance(action, self.action_cls)
 
-    @mock.patch('CloudFlare.cloudflare.requests')
+    @mock.patch('CloudFlare.network.requests')
     def test_run(self, mock_requests):
         action = self.get_action_instance(self.config_good)
         expected = {'ipv4_cidrs': [u'199.27.128.0/21'],
