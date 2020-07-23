@@ -12,6 +12,7 @@ MOCK_DATA_SUCCESS = open(
 
 class GetIPsActionTestCase(CloudflareBaseActionTestCase):
     action_cls = GetIPsAction
+    maxDiff = None
 
     def test_run_is_instance(self):
         action = self.get_action_instance(self.config_good)
