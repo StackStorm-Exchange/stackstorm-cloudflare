@@ -1,5 +1,9 @@
 # Change Log
 
+# development
+
+- Fixed mocks for tests
+
 # 0.4.1
 
 - Converted maintainer over to Encore Technologies
