@@ -151,7 +151,7 @@ class BaseActionTestCase(CloudflareBaseActionTestCase):
         ]
         mock_func.assert_has_calls(expected_calls)
 
-    @mock.patch('CloudFlare.cloudflare.requests')
+    @mock.patch('CloudFlare.network.requests')
     def test_run_status_404(self, mock_requests):
         action = self.get_action_instance(self.config_good)
 
@@ -175,7 +175,7 @@ class BaseActionTestCase(CloudflareBaseActionTestCase):
         self.assertRaises(CloudFlareAPIError,
                           action.run)
 
-    @mock.patch('CloudFlare.cloudflare.requests')
+    @mock.patch('CloudFlare.network.requests')
     def test_run_invalid_json(self, mock_requests):
         action = self.get_action_instance(self.config_good)
 
@@ -191,7 +191,7 @@ class BaseActionTestCase(CloudflareBaseActionTestCase):
         self.assertRaises(CloudFlareAPIError,
                           action.run)
 
-    @mock.patch('CloudFlare.cloudflare.requests')
+    @mock.patch('CloudFlare.network.requests')
     def test_run_success_false(self, mock_requests):
         action = self.get_action_instance(self.config_good)
 
