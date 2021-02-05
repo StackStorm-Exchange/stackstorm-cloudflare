@@ -1,8 +1,9 @@
 # Change Log
 
-# development
+# 1.0.0
 
 - Fixed mocks for tests
+- Drop Python 2.7 support
 
 # 0.4.1
 
