@@ -55,8 +55,11 @@ class CloudflareBaseAction(Action):
                 # NOTE: the default page number = 1
                 params['page'] = page_number
 
-            # invoke the Cloudflare APIo
-            raw_results = func(*args, params=copy.deepcopy(params))
+            # invoke the Cloudflare API
+            if func.__name__ == 'post':
+                raw_results = func(*args, data=copy.deepcopy(params))
+            else:
+                raw_results = func(*args, params=copy.deepcopy(params))
 
             # do we have paged results
             if 'result_info' not in raw_results:

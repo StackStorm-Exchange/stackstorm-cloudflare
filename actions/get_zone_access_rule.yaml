@@ -1,0 +1,35 @@
+---
+description: "List access rules from a zone"
+enabled: true
+entry_point: "get_zone_access_rule.py"
+name: "get_zone_access_rule"
+pack: "cloudflare"
+runner_type: "python-script"
+parameters:
+  zone_id:
+    type: string
+    description: "Zone identify tag (ex: '023e105f4ecef8ad9ca31a8372d0c353')"
+    required: true
+  match:
+    type: string
+    description: "Whether to match all search requirements or at least one (any)."
+    enum:
+      - "all"
+      - "any"
+  notes:
+    type: string
+    description: "Search rules by notes."
+  mode:
+    type: string
+    description: "Search rules by action."
+  configuration_target:
+    type: string
+    description: "Search rules by target."
+    enum:
+      - "asn"
+      - "country"
+      - "ip"
+      - "ip_range"
+  configuration_value:
+    type: string
+    description: "Search rules by IP, range, or country code"

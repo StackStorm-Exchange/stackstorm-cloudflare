@@ -1,0 +1,39 @@
+---
+description: "Create an access rule for a zone"
+enabled: true
+entry_point: "create_zone_access_rule.py"
+name: "create_zone_access_rule"
+pack: "cloudflare"
+runner_type: "python-script"
+parameters:
+  zone_id:
+    type: string
+    description: "Zone identify tag (ex: '023e105f4ecef8ad9ca31a8372d0c353')"
+    required: true
+  mode:
+    type: string
+    description: "The action to apply to a matched request"
+    required: true
+    enum:
+      - "block"
+      - "challenge"
+      - "js_challenge"
+      - "managed_challenge"
+      - "whitelist"
+  target_type:
+    type: string
+    description: "The address type to target in requests"
+    required: true
+    enum:
+      - "asn"
+      - "country"
+      - "ip_range"
+      - "ip"
+      - "ip6"
+  target:
+    type: string
+    description: "The address to target in requests"
+    required: true
+  notes:
+    type: string
+    description: "A note about the rule."
