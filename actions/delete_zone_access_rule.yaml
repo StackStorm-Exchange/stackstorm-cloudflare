@@ -1,0 +1,16 @@
+---
+description: "Delete an access rule from a zone"
+enabled: true
+entry_point: "delete_zone_access_rule.py"
+name: "delete_zone_access_rule"
+pack: "cloudflare"
+runner_type: "python-script"
+parameters:
+  zone_id:
+    type: string
+    description: "Zone identify tag (ex: '023e105f4ecef8ad9ca31a8372d0c353')"
+    required: true
+  rule_id:
+    type: string
+    description: "Rule identify tag (ex: '023e105f4ecef8ad9ca31a8372d0c353')"
+    required: true
