@@ -15,17 +15,17 @@ class BaseActionTestCase(CloudflareBaseActionTestCase):
 
     def test_init_blank(self):
         action = self.get_action_instance(self.config_blank)
-        self.assertEquals(action.api_key, None)
-        self.assertEquals(action.api_email, None)
-        self.assertEquals(action.client._base.token, None)
-        self.assertEquals(action.client._base.email, None)
+        self.assertEqual(action.api_key, None)
+        self.assertEqual(action.api_email, None)
+        self.assertEqual(action.client._base.token, None)
+        self.assertEqual(action.client._base.email, None)
 
     def test_init_good(self):
         action = self.get_action_instance(self.config_good)
-        self.assertEquals(action.api_key, "API-Key")
-        self.assertEquals(action.api_email, "user@domain.tld")
-        self.assertEquals(action.client._base.token, "API-Key")
-        self.assertEquals(action.client._base.email, "user@domain.tld")
+        self.assertEqual(action.api_key, "API-Key")
+        self.assertEqual(action.api_email, "user@domain.tld")
+        self.assertEqual(action.client._base.token, "API-Key")
+        self.assertEqual(action.client._base.email, "user@domain.tld")
 
     def test_kwargs_to_params(self):
         action = self.get_action_instance({})
@@ -39,10 +39,10 @@ class BaseActionTestCase(CloudflareBaseActionTestCase):
         result = action.kwargs_to_params(**kwargs_dict)
 
         # assert
-        self.assertEquals(result, {"test_std": "value1",
-                                   "test_list": [],
-                                   "test_dict": {},
-                                   "test_int": 1})
+        self.assertEqual(result, {"test_std": "value1",
+                                  "test_list": [],
+                                  "test_dict": {},
+                                  "test_int": 1})
 
     def test_invoke_paging(self):
         action = self.get_action_instance({})
@@ -79,7 +79,7 @@ class BaseActionTestCase(CloudflareBaseActionTestCase):
         result = action.invoke(mock_func, "zone_id", **params)
 
         # asserts
-        self.assertEquals(result, [1, 2, 3, 4, 5, 6, 7, 8, 9])
+        self.assertEqual(result, [1, 2, 3, 4, 5, 6, 7, 8, 9])
 
         # ensure we called with the proper page numbers, in the proper order
         expected_calls = [
@@ -118,7 +118,7 @@ class BaseActionTestCase(CloudflareBaseActionTestCase):
         result = action.invoke(mock_func, "arg", **params)
 
         # asserts
-        self.assertEquals(result, [1, 2, 3])
+        self.assertEqual(result, [1, 2, 3])
 
         # ensure we called with the no page number
         expected_calls = [
@@ -141,7 +141,7 @@ class BaseActionTestCase(CloudflareBaseActionTestCase):
         result = action.invoke(mock_func, "zone_id", **params)
 
         # asserts
-        self.assertEquals(result, [1, 2, 3])
+        self.assertEqual(result, [1, 2, 3])
 
         # ensure we called with no page number
         expected_calls = [
