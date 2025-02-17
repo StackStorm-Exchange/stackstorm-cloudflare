@@ -1,2 +1,2 @@
-cloudflare
+git+https://github.com/cloudflare/python-cloudflare.git@2.9.12
 six
